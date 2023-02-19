@@ -1,0 +1,365 @@
+Для вирішення поставленого завдання можна використати патерн Будівник для створення об'єктів класу "Ноутбук" з різною конфігурацією, а патерн Прототип можна використовувати для клонування об'єктів ноутбуків.
+Діаграма класів буде складатися з наступних класів:
+•	Ноутбук (Laptop): клас, який містить інформацію про ноутбук, таку як модель, розмір екрану, процесор, оперативну пам'ять, жорсткий диск тощо.
+•	Конфігуратор (LaptopBuilder): абстрактний клас, який містить методи для побудови ноутбука з різною конфігурацією.
+•	Конкретний будівельник (ConcreteLaptopBuilder): клас, який реалізує методи абстрактного класу "Конфігуратор" для побудови конкретних ноутбуків.
+•	Директор (LaptopDirector): клас, який використовує конфігуратор, щоб створювати об'єкти ноутбуків.
+•	Прототип (LaptopPrototype): абстрактний клас, який містить метод клонування ноутбука.
+•	Конкретний прототип (ConcreteLaptopPrototype): клас, який реалізує метод клонування абстрактного класу "Прототип".
+Клас "Ноутбук" матиме наступні атрибути та методи:
+•	Модель (model)
+•	Розмір екрану (screen_size)
+•	Процесор (processor)
+•	Оперативна пам'ять (ram)
+•	Жорсткий диск (hard_disk)
+•	Методи get та set для всіх атрибутів.
+Абстрактний клас "Конфігуратор" буде мати методи для побудови ноутбука з різною конфігурацією:
+•	Побудова моделі (build_model)
+•	Побудова розміру екрану (build_screen_size)
+•	Побудова процесора (build_processor)
+•	Побудова оперативної пам'яті (build_ram)
+•	Побудова жорсткого диска (build_hard_disk)
+•	Метод get_laptop,
+
+Клас "Конкретний будівельник" буде реалізувати методи абстрактного класу "Конфігуратор" для побудови конкретних ноутбуків. 
+Клас матиме власні атрибути, такі як змінна поточного ноутбука, інформація про компоненти ноутбука та метод get_laptop для повернення ноутбука, 
+побудованого за допомогою даного будівельника.
+Клас "Директор" буде використовувати конфігуратор, щоб створювати об'єкти ноутбуків. 
+Клас матиме метод set_laptop_builder, який дозволяє встановити конкретного будівельника для побудови ноутбука, а також метод construct_laptop,
+який буде викликати методи конфігуратора для побудови ноутбука.
+Абстрактний клас "Прототип" матиме метод клонування ноутбука, а клас "Конкретний прототип" 
+буде реалізовувати цей метод за допомогою глибокого копіювання атрибутів ноутбука.
+У програмі з візуальним інтерфейсом користувач матиме можливість вибрати 
+конфігурацію ноутбука, використовуючи різні параметри, такі як модель, розмір екрану, процесор, оперативну пам'ять та жорсткий диск.
+Після побудови ноутбука користувач матиме можливість створити безліч копій цього ноутбука за допомогою методу клонування.
+Для більш детального розуміння можна переглянути наступну діаграму класів:
+
+       +---------------------+         +--------------------------+
+       |      Laptop         |         |      LaptopBuilder        |
+       +---------------------+         +--------------------------+
+       | -model: string      |         | +createLaptop(): void      |
+       | -screenSize: float  |         | +addProcessor(): void      |
+       | -processor: string  |         | +addMemory(): void         |
+       | -memory: int        |         | +addHardDrive(): void      |
+       | -hardDrive: int     |         +--------------------------+
+       +---------------------+         /               \
+                    ^                   /                 \
+                    |                  /                   \
+        +---------------------+    +--------------------------------+
+        | LaptopPrototype     |    |      ConcreteLaptopBuilder       |
+        +---------------------+    +--------------------------------+
+        | +clone(): Laptop    |    | +createLaptop(): void           |
+        +---------------------+    | +addProcessor(): void           |
+                      ^            | +addMemory(): void              |
+                      |            | +addHardDrive(): void           |
+          +-----------------------+----------------------------------+
+          |                         /                                 \
+          |                        /                                   \
+          |                       /                                     \
++---------------------+  +---------------------+           +---------------------+
+|    LaptopDirector   |  |    GamingLaptop     |           |    OfficeLaptop     |
++---------------------+  +---------------------+           +---------------------+
+| -laptopBuilder:     |  | -model: string      |           | -model: string      |
+|   LaptopBuilder     |  | -screenSize: float  |           | -screenSize: float  |
+| +setLaptopBuilder():|  | -processor: string  |           | -processor: string  |
+|   void              |  | -memory: int        |           | -memory: int        |
+| +getLaptop(): Laptop|  | -hardDrive: int     |           | -hardDrive: int     |
++---------------------+  +---------------------+           +---------------------+  
+
+Нижче наведено код на мові Python для реалізації цього проекту з візуальним інтерфейсом:
+
+```python
+import copy
+
+# Абстрактний клас конфігуратора
+class LaptopBuilder:
+    def build_model(self):
+        pass
+    
+    def build_screen(self):
+        pass
+    
+    def build_processor(self):
+        pass
+    
+    def build_ram(self):
+        pass
+    
+    def build_hard_disk(self):
+        pass
+    
+    def get_laptop(self):
+        pass
+
+# Конкретний конфігуратор
+class ConcreteLaptopBuilder(LaptopBuilder):
+    def __init__(self):
+        self.laptop = Laptop()
+        
+    def build_model(self, model):
+        self.laptop.model = model
+        
+    def build_screen(self, screen_size):
+        self.laptop.screen_size = screen_size
+        
+    def build_processor(self, processor):
+        self.laptop.processor = processor
+        
+    def build_ram(self, ram):
+        self.laptop.ram = ram
+        
+    def build_hard_disk(self, hard_disk):
+        self.laptop.hard_disk = hard_disk
+        
+    def get_laptop(self):
+        return self.laptop
+
+# Клас директора
+class LaptopDirector:
+    def __init__(self):
+        self.laptop_builder = None
+        
+    def set_laptop_builder(self, laptop_builder):
+        self.laptop_builder = laptop_builder
+        
+    def construct_laptop(self, model, screen_size, processor, ram, hard_disk):
+        self.laptop_builder.build_model(model)
+        self.laptop_builder.build_screen(screen_size)
+        self.laptop_builder.build_processor(processor)
+        self.laptop_builder.build_ram(ram)
+        self.laptop_builder.build_hard_disk(hard_disk)
+        
+# Абстрактний клас прототипу
+class LaptopPrototype:
+    def clone(self):
+        pass
+
+# Конкретний клас прототипу
+class ConcreteLaptopPrototype(LaptopPrototype):
+    def __init__(self, laptop):
+        self.laptop = laptop
+        
+    def clone(self):
+        return copy.deepcopy(self.laptop)
+
+# Клас ноутбука
+class Laptop:
+    def __init__(self):
+        self.model = ""
+        self.screen_size = 0
+        self.processor = ""
+        self.ram = 0
+        self.hard_disk = 0
+
+# Візуальний інтерфейс
+class LaptopGUI:
+    def __init__(self):
+        self.director = LaptopDirector()
+        self.builder = ConcreteLaptopBuilder()
+        self.prototype = None
+        self.create_gui()
+        
+    def create_gui(self):
+        # код для створення візуального інтерфейсу
+        pass
+    
+    def build_laptop(self):
+        model = self.get_model()
+        screen_size = self.get_screen_size()
+        processor = self.get_processor()
+        ram        hard_disk = self.get_hard_disk()
+        
+        # побудова конфігурації
+        self.director.set_laptop_builder(self.builder)
+        self.director.construct_laptop(model, screen_size, processor, ram, hard_disk)
+        
+        # збереження обраного ноутбука як прототипу
+        laptop = self.builder.get_laptop()
+        self.prototype = ConcreteLaptopPrototype(laptop)
+        
+    def clone_laptop(self):
+        # клонування прототипу
+        if self.prototype is not None:
+            cloned_laptop = self.prototype.clone()
+            # код для створення нового вікна з клонованим ноутбуком
+        else:
+            # код для відображення повідомлення про те, що ноутбук не був створений
+            pass
+        
+    def get_model(self):
+        # код для отримання моделі ноутбука
+        pass
+    
+    def get_screen_size(self):
+        # код для отримання розміру екрану
+        pass
+    
+    def get_processor(self):
+        # код для отримання процесора
+        pass
+    
+    def get_ram(self):
+        # код для отримання обсягу оперативної пам'яті
+        pass
+    
+    def get_hard_disk(self):
+        # код для отримання обсягу жорсткого диску
+        Pass
+from copy import deepcopy
+
+class LaptopPrototype:
+    """
+    Абстрактний клас прототипу для клонування об'єктів ноутбуків
+    """
+    def clone(self):
+        pass
+    
+class ConcreteLaptopPrototype(LaptopPrototype):
+    """
+    Конкретний клас прототипу для клонування об'єктів ноутбуків
+    """
+    def __init__(self, laptop):
+        self._laptop = laptop
+        
+    def clone(self):
+        return deepcopy(self._laptop)
+import tkinter as tk
+
+class LaptopGUI:
+    """
+    Графічний інтерфейс користувача для вибору параметрів ноутбука та створення його копій
+    """
+    def __init__(self, master):
+        self.master = master
+        master.title("Ноутбук")
+        
+        self.laptop_builder = LaptopBuilder()
+        
+        # створення елементів вікна
+        self.model_label = tk.Label(master, text="Модель:")
+        self.model_entry = tk.Entry(master)
+        self.screen_size_label = tk.Label(master, text="Розмір екрану:")
+        self.screen_size_entry = tk.Entry(master)
+        self.processor_label = tk.Label(master, text="Процесор:")
+        self.processor_entry = tk.Entry(master)
+        self.ram_label = tk.Label(master, text="Оперативна пам'ять:")
+        self.ram_entry = tk.Entry(master)
+        self.hard_disk_label = tk.Label(master, text="Жорсткий диск:")
+        self.hard_disk_entry = tk.Entry(master)
+        self.create_button = tk.Button(master, text="Створити", command=self.create_laptop)
+        self.clone_button = tk.Button(master, text="Клонувати", command=self.clone_laptop)
+        self.quit_button = tk.Button(master, text="Вихід", command=master.quit)
+        
+        # розміщення елемент
+        # розміщення елементів
+        self.model_label.grid(row=0, column=0)
+        self.model_entry.grid(row=0, column=1)
+        self.screen_size_label.grid(row=1, column=0)
+        self.screen_size_entry.grid(row=1, column=1)
+        self.processor_label.grid(row=2, column=0)
+        self.processor_entry.grid(row=2, column=1)
+        self.ram_label.grid(row=3, column=0)
+        self.ram_entry.grid(row=3, column=1)
+        self.hard_disk_label.grid(row=4, column=0)
+        self.hard_disk_entry.grid(row=4, column=1)
+        self.create_button.grid(row=5, column=0, padx=10, pady=10)
+        self.clone_button.grid(row=5, column=1, padx=10, pady=10)
+        self.quit_button.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
+    def create_laptop(self):
+        model = self.model_entry.get()
+        screen_size = self.screen_size_entry.get()
+        processor = self.processor_entry.get()
+        ram = self.ram_entry.get()
+        hard_disk = self.hard_disk_entry.get()
+        
+        self.laptop_builder.set_model(model)
+        self.laptop_builder.set_screen_size(screen_size)
+        self.laptop_builder.set_processor(processor)
+        self.laptop_builder.set_ram(ram)
+        self.laptop_builder.set_hard_disk(hard_disk)
+        
+        self.laptop = self.laptop_builder.build()
+    def clone_laptop(self):
+        if hasattr(self, "laptop"):
+            laptop_prototype = ConcreteLaptopPrototype(self.laptop)
+            cloned_laptop = laptop_prototype.clone()
+            print("Створено копію ноутбука:")
+            print(cloned_laptop)
+        else:
+            print("Ноутбук не було створено:”)
+             print(nocloned_laptop)
+
+
+import tkinter as tk
+from abc import ABC, abstractmethod
+
+
+class LaptopBuilder(ABC):
+    @abstractmethod
+    def set_model(self, model):
+        pass
+    
+    @abstractmethod
+    def set_screen_size(self, screen_size):
+        pass
+    
+    @abstractmethod
+    def set_processor(self, processor):
+        pass
+    
+    @abstractmethod
+    def set_ram(self, ram):
+        pass
+    
+    @abstractmethod
+    def set_hard_disk(self, hard_disk):
+        pass
+    
+    @abstractmethod
+    def build(self):
+        pass
+
+    
+class ConcreteLaptopBuilder(LaptopBuilder):
+    def __init__(self):
+        self.laptop = Laptop()
+    
+    def set_model(self, model):
+        self.laptop.model = model
+    
+    def set_screen_size(self, screen_size):
+        self.laptop.screen_size = screen_size
+    
+    def set_processor(self, processor):
+        self.laptop.processor = processor
+    
+    def set_ram(self, ram):
+        self.laptop.ram = ram
+    
+    def set_hard_disk(self, hard_disk):
+        self.laptop.hard_disk = hard_disk
+    
+    def build(self):
+        return self.laptop
+
+
+class Laptop:
+    def __init__(self):
+        self.model = None
+        self.screen_size = None
+        self.processor = None
+        self.ram = None
+        self.hard_disk = None
+    
+    def __str__(self):
+        return f"Ноутбук: {self.model}, Екран: {self.screen_size}, Процесор: {self.processor}, RAM: {self.ram}, HDD: {self.hdd}
+
+У методі clone_laptop() ми перевіряємо, чи існує об'єкт ноутбука, щоб переконатись, що він був створений до цього. 
+Якщо так, ми створюємо прототип ноутбука за допомогою класу ConcreteLaptopPrototype, який є реалізацією інтерфейсу LaptopPrototype. 
+Потім ми викликаємо метод clone() для створення копії ноутбука та виводимо інформацію про неї на екран.
+Далі додамо код для створення екземпляру класу LaptopConfigurator та запуску програми:
+
+if __name__ == '__main__': root = tk.Tk() app = LaptopConfigurator(root, LaptopBuilder()) root.mainloop() 
+Тут ми створюємо екземпляр головного вікна за допомогою класу Tk() з бібліотеки tkinter, і передаємо його в конструктор класу LaptopConfigurator.
+Також ми передаємо об'єкт будівельника LaptopBuilder, який буде використовуватись для створення об'єктів ноутбука. Нарешті, ми запускаємо головний цикл програми за допомогою методу mainloop().
+
